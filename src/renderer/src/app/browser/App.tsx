@@ -1,7 +1,7 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import electronLogo from '@renderer/assets/electron.svg'
+import Versions from '../../components/Versions'
 
-function App(): JSX.Element {
+function BrowserApp(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
@@ -12,9 +12,7 @@ function App(): JSX.Element {
         Build an Electron app with <span className="react">React</span>
         &nbsp;and <span className="ts">TypeScript</span>
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
+      <p className="tip">This is second instance</p>
       <div className="actions">
         <div className="action">
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
@@ -32,4 +30,4 @@ function App(): JSX.Element {
   )
 }
 
-export default App
+export default BrowserApp
