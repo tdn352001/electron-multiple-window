@@ -1,73 +1,8 @@
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
-import { join } from 'path'
-import icon from '../../resources/icon.png?asset'
-
-function createNodeWindow(): void {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
-  })
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    console.log('ELECTRON_RENDERER_URL', process.env['ELECTRON_RENDERER_URL'])
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/node.html')
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/node.html'))
-  }
-}
-
-function createBrowserWindow(): void {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
-  })
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    console.log('ELECTRON_RENDERER_URL', process.env['ELECTRON_RENDERER_URL'])
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/browser.html')
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/browser.html'))
-  }
-}
+import { electronApp, optimizer } from '@electron-toolkit/utils'
+import windowIpcHandler from '@main/ipc/window'
+import { app, BrowserWindow } from 'electron'
+import { windowCreator } from './windows/creator'
+import windowManager from './windows/manager'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -83,24 +18,18 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.on('browser', () => {
-    const windowCount = BrowserWindow.getAllWindows().length
-    if (windowCount <= 1) {
-      createBrowserWindow()
-    } else {
-      const lastWindow = BrowserWindow.getAllWindows()[windowCount - 1]
-      lastWindow.show()
-    }
-  })
+  const win = windowCreator.createNodeWindow()
+  windowManager.addWindow(win)
 
-  createNodeWindow()
+  windowIpcHandler.handleRerenderEvents()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createNodeWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      const win = windowCreator.createNodeWindow()
+      windowManager.addWindow(win)
+    }
   })
 })
 
