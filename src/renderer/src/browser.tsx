@@ -1,6 +1,5 @@
-import BrowserApp from '@renderer/app/browser/App'
-import './assets/main.css'
-
+import BrowserApp from '@/app/browser/App'
+import '@/styles/index.scss'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
