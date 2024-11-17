@@ -1,4 +1,5 @@
 import { is } from '@electron-toolkit/utils'
+import { tabCreator } from '@main/tabs/creator'
 import { BrowserWindowConstructorOptions, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../../resources/icon.png?asset'
@@ -46,6 +47,8 @@ export const windowCreator = {
     const win = new AppWindow(WindowType.Browser, {
       width: 900,
       height: 670,
+      minWidth: 600,
+      minHeight: 500,
       show: false,
       autoHideMenuBar: true,
       ...(process.platform === 'linux' ? { icon } : {}),
@@ -55,6 +58,9 @@ export const windowCreator = {
       },
       ...options
     })
+
+    const tab = tabCreator.createTab()
+    win.addTab(tab)
 
     win.on('ready-to-show', () => {
       win.show()

@@ -6,6 +6,9 @@
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts",
     "src/main/**/*.d.ts"
+, "src/main/windows/type.d.ts"  ],
+  "exclude": [
+    // "src/main/windows/window.d.ts"
   ],
   "compilerOptions": {
     "composite": true,

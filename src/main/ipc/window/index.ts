@@ -4,7 +4,7 @@ import windowManager from '../../windows/manager'
 import { WindowEvents } from './events'
 
 class WindowIpcHandler {
-  handleRerenderEvents() {
+  initialize() {
     ipcMain.on(WindowEvents.OpenBrowserWindow, () => {
       const win = windowCreator.createBrowserWindow()
       windowManager.addWindow(win)

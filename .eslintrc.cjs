@@ -13,6 +13,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
-    'react/display-name': 'off'
+    'react/display-name': 'off',
+    '@typescript-eslint/no-empty-interface': 'off'
   }
 }

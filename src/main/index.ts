@@ -1,4 +1,5 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+import tabIpcHandler from '@main/ipc/tab'
 import windowIpcHandler from '@main/ipc/window'
 import { app, BrowserWindow } from 'electron'
 import { windowCreator } from './windows/creator'
@@ -21,7 +22,8 @@ app.whenReady().then(() => {
   const win = windowCreator.createNodeWindow()
   windowManager.addWindow(win)
 
-  windowIpcHandler.handleRerenderEvents()
+  windowIpcHandler.initialize()
+  tabIpcHandler.initialize()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

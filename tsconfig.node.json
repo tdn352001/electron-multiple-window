@@ -4,6 +4,7 @@
   "compilerOptions": {
     "composite": true,
     "noUnusedLocals": false,
+    "noImplicitReturns": false,
     "types": ["electron-vite/node"],
     "baseUrl": ".",
     "paths": {
